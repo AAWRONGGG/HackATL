@@ -2,6 +2,8 @@ import { REQUIREMENT_RULES } from '../data/atlantaRequirements.js';
 
 export const RULESET_VERSION = 'ATL-2026-10-17-v1';
 export const DOCUMENT_INBOX_KEY = 'clearbridge-document-analysis-v1';
+// Where the Requirements page saves the profile, checklist and evidence (shared with the dashboard).
+export const REQUIREMENTS_STORAGE_KEY = 'clearbridge-atlanta-requirements-v1';
 export const EVIDENCE_STATUSES = [
   'not_submitted', 'document_received', 'needs_review', 'evidence_reviewed',
 ];
