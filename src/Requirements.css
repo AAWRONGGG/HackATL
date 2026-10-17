@@ -1,0 +1,63 @@
+/* Scoped styles: won't change your existing ClearBridge dashboard. */
+.cb-req { color: #17243a; width: 100%; max-width: 1140px; margin: 0 auto; padding: 4px 0 50px; font-family: inherit; }
+.cb-req * { box-sizing: border-box; }
+.cb-req-head, .cb-req-results-title { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+.cb-req h1 { font-size:clamp(1.9rem, 3vw, 2.5rem); line-height:1.2; margin:7px 0 10px; letter-spacing:-.035em; }
+.cb-req h2 { font-size:1.36rem; margin:0; letter-spacing:-.02em; }
+.cb-req h3 { font-size:1rem; margin:0 0 13px; }
+.cb-req h4 { font-size:1.04rem; margin:10px 0 8px; }
+.cb-req p { line-height:1.58; margin:0; color:#64748b; }
+.cb-req-head p { max-width:660px; }
+.cb-req-eyebrow { color:#5073a2; font-size:.73rem; font-weight:800; letter-spacing:.085em; display:flex; gap:7px; align-items:center; }
+.cb-req-version { white-space:nowrap; color:#6b7d92; border:1px solid #e1e7ef; border-radius:99px; padding:8px 12px; font-size:.72rem; }
+.cb-req-alert { display:flex; gap:11px; padding:15px 17px; border:1px solid #f3dfa5; background:#fffaf0; border-radius:12px; color:#805d19; font-size:.88rem; margin:24px 0; line-height:1.48; }
+.cb-req-alert svg { flex-shrink:0; }
+.cb-req-form { border:1px solid #e5eaf1; background:#fff; border-radius:17px; padding:25px; box-shadow:0 7px 20px rgba(29,53,87,.035); }
+.cb-req-form-title { display:flex; gap:11px; align-items:center; color:#2767b0; margin-bottom:19px; }
+.cb-req-form-title h2 { color:#17243a; }
+.cb-req-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:17px; }
+.cb-req-field { display:flex; flex-direction:column; gap:8px; color:#34445d; font-size:.83rem; font-weight:700; }
+.cb-req-field input,.cb-req-field select { width:100%; height:43px; border:1px solid #dce3ec; border-radius:9px; font:inherit; font-weight:500; background:white; padding:0 11px; color:#1a2d47; }
+.cb-req-field input:focus,.cb-req-field select:focus { outline:2px solid #9ec4f3; outline-offset:1px; }
+.cb-req-confirm { display:flex; align-items:flex-start; gap:11px; margin:20px 0 17px; font-size:.86rem; color:#34445d; line-height:1.5; cursor:pointer; }
+.cb-req-confirm input { margin:3px 0 0; accent-color:#2867af; width:16px; height:16px; flex-shrink:0; }
+.cb-req-form-actions { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.cb-req button { cursor:pointer; font:inherit; }
+.cb-req-generate,.cb-req-export { border:0; border-radius:9px; background:#205ba1; padding:12px 16px; display:inline-flex; align-items:center; gap:9px; color:white; font-weight:700; font-size:.9rem; }
+.cb-req-generate:disabled { opacity:.5; cursor:not-allowed; }
+.cb-req-reset { border:1px solid #dce3ec; border-radius:9px; background:#fff; color:#51627c; padding:11px 15px; display:inline-flex; align-items:center; gap:7px; font-weight:650; }
+.cb-req-message { margin-top:13px; color:#356b53; font-size:.83rem; }
+.cb-req-results { margin-top:30px; }
+.cb-req-results-title p { margin-top:7px; }
+.cb-req-export { background:#eef4fc; border:1px solid #cfe0f3; color:#1d568e; white-space:nowrap; }
+.cb-req-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:22px 0; }
+.cb-req-stats > div { background:white; border:1px solid #e5eaf1; border-radius:12px; padding:17px; display:flex; flex-direction:column; gap:5px; }
+.cb-req-stats strong { font-size:1.65rem; }
+.cb-req-stats span { color:#728093; font-size:.76rem; }
+.cb-req-filter { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.cb-req-filter button { border:1px solid #dce4ec; border-radius:30px; color:#53667d; background:#fff; padding:8px 14px; font-size:.8rem; font-weight:700; }
+.cb-req-filter button.selected { border-color:#205ba1; color:white; background:#205ba1; }
+.cb-req-group { margin-bottom:24px; }
+.cb-req-group > h3 { color:#4e627d; text-transform:uppercase; letter-spacing:.07em; font-size:.78rem; margin-bottom:9px; }
+.cb-req-item { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; background:white; border:1px solid #e5eaf1; border-radius:13px; padding:19px 21px; margin-bottom:11px; }
+.cb-req-item-main { flex:1; min-width:0; }
+.cb-req-item-main p { font-size:.87rem; }
+.cb-req-pill { padding:4px 9px; border-radius:20px; font-size:.69rem; font-weight:800; display:inline-block; }
+.cb-req-pill-required { color:#215f4f; background:#e2f4ea; }
+.cb-req-pill-conditional { color:#8f6220; background:#fff3d7; }
+.cb-req-pill-review { color:#7a5672; background:#f5eafa; }
+.cb-req-meta,.cb-req-source { display:flex; gap:6px; align-items:center; margin-top:10px; font-size:.78rem; }
+.cb-req-meta { color:#6a7b90; }
+.cb-req-source { color:#185ba8; text-decoration:none; font-weight:700; }
+.cb-req-source:hover { text-decoration:underline; }
+.cb-req-evidence { font-size:.75rem; color:#6d7c91; margin-top:11px; line-height:1.65; }
+.cb-req-evidence code { font-family:ui-monospace,SFMono-Regular,monospace; background:#f2f5f9; border-radius:4px; padding:3px 5px; white-space:normal; overflow-wrap:anywhere; }
+.cb-req-item-side { width:228px; flex-shrink:0; display:flex; flex-direction:column; align-items:stretch; gap:8px; }
+.cb-req-evidence-status { display:flex; align-items:center; gap:6px; color:#526a87; font-size:.75rem; line-height:1.4; margin-bottom:5px; }
+.cb-req-item-side button { display:flex; justify-content:center; align-items:center; gap:6px; padding:9px 11px; font-weight:700; font-size:.72rem; color:#205a9e; border:1px solid #cddcf0; border-radius:8px; background:#f3f8ff; }
+.cb-req-item-side button.cb-req-subtle { border:0; color:#738196; background:transparent; }
+.cb-req-side-note { color:#738196; font-size:.76rem; }
+.cb-req-ai-note,.cb-req-footer { display:flex; align-items:flex-start; gap:10px; background:#eef5ff; border-radius:10px; padding:14px; font-size:.82rem; color:#385f8c; margin-bottom:16px; }
+.cb-req-ai-note svg,.cb-req-footer svg { flex-shrink:0; }
+.cb-req-footer { background:#f3f6fa; color:#65758a; margin-top:22px; }
+@media(max-width:780px) { .cb-req-head,.cb-req-results-title { flex-direction:column; } .cb-req-grid { grid-template-columns:1fr; } .cb-req-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .cb-req-item { flex-direction:column; } .cb-req-item-side { width:100%; } .cb-req-version { white-space:normal; } .cb-req-form { padding:18px; } }
