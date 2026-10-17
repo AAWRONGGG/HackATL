@@ -11,6 +11,10 @@ import {
   REQUIREMENTS_STORAGE_KEY as STORAGE_KEY,
 } from './services/requirementsEngine.js';
 import './Requirements.css';
+import {
+  getRequirementProgress,
+  setRequirementCompleted
+} from "./services/requirementProgress";
 const STATUS_TEXT = {
   not_submitted: 'No document yet',
   document_received: 'Document received — review needed',
@@ -52,6 +56,7 @@ export default function Requirements() {
   const [filter, setFilter] = useState('all');
   const [notice, setNotice] = useState('');
   const [aiMessage, setAiMessage] = useState('');
+  const [progress, setProgress] = useState(getRequirementProgress);
 
   const result = useMemo(
     () => generated ? getRequirements(profile) : null,
@@ -268,7 +273,22 @@ export default function Requirements() {
             const status = evidence[item.id]?.status || 'not_submitted';
             return <article className="cb-req-item" key={item.id}>
               <div className="cb-req-item-main">
-                <span className={`cb-req-pill cb-req-pill-${item.classification}`}>{CLASS_TEXT[item.classification]}</span>
+  <span className={`cb-req-pill cb-req-pill-${item.classification}`}>
+    {CLASS_TEXT[item.classification]}
+  </span>
+
+                <label className="cb-req-completion">
+                  <input
+                      type="checkbox"
+                      checked={progress[item.id] === true}
+                      onChange={(e) => {
+                        setRequirementCompleted(item.id, e.target.checked);
+                        setProgress(getRequirementProgress());
+                      }}
+                  />
+                  <span>Mark as completed</span>
+                </label>
+
                 <h4>{item.title}</h4>
                 <p>{item.description}</p>
                 <div className="cb-req-meta"><ShieldCheck size={15} /> {item.agency}</div>

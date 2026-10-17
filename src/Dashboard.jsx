@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight, CalendarDays, ClipboardCheck, MessageCircle, UploadCloud, Users } from 'lucide-react';
 import { CLASS_TEXT, loadChecklist, saveEvidence, STATUS_TEXT, statusOf, summarize } from './services/checklistStore.js';
 
+
 function greeting() {
   const h = new Date().getHours();
   return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
