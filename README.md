@@ -1,1 +1,1 @@
-to run: npm run dev
+to run frontend: npm run dev
