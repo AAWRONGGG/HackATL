@@ -1,0 +1,9 @@
+{
+  "training_data": "real_Georgia_PDFs",
+  "synthetic_training": false,
+  "n_train": 3,
+  "n_validation": 3,
+  "n_test": 3,
+  "holdout_macro_f1": 1.0,
+  "warning": "Only ~1 test form per class; unreliable estimate of generalization. Blank forms only."
+}
