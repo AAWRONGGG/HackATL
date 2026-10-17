@@ -8,9 +8,9 @@ import { INDUSTRIES } from './data/atlantaRequirements.js';
 import {
   clearDocumentAnalyses, defaultProfile, exportRequirementsPayload, getDocumentAnalyses,
   getRequirements, matchDocumentToRequirements, normalizedProfile, RULESET_VERSION,
+  REQUIREMENTS_STORAGE_KEY as STORAGE_KEY,
 } from './services/requirementsEngine.js';
-import './Requirements.jsx';
-const STORAGE_KEY = 'clearbridge-atlanta-requirements-v1';
+import './Requirements.css';
 const STATUS_TEXT = {
   not_submitted: 'No document yet',
   document_received: 'Document received — review needed',
