@@ -1,0 +1,25 @@
+{
+  "project": "BizBridge",
+  "date_utc": "2026-10-17T20:06:27.284886+00:00",
+  "model": "TF-IDF + LogisticRegression",
+  "trained_on": "real Georgia government PDF text",
+  "synthetic_training": false,
+  "labels": [
+    "business_registration",
+    "food_service_permit",
+    "tax_document"
+  ],
+  "training_documents": 3,
+  "validation_documents": 3,
+  "test_documents": 3,
+  "test_macro_f1": 1.0,
+  "model_score_calibrated": false,
+  "scikit_learn_version": "1.6.1",
+  "limitations": [
+    "Only 9 real training/evaluation candidates from 3 classes",
+    "No issued-permit validity determination",
+    "Blank forms are not filled-in documents",
+    "Form-field extraction is heuristic",
+    "No verified legal requirements are bundled by default"
+  ]
+}
