@@ -3,3 +3,10 @@ node_modules/
 dist/
 .env
 .env.local
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+package-lock.backup.json
+.env
+.env.local
