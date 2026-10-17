@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>ClearBridge | Business made simpler</title><script>
+/* Apply saved accessibility settings before the page draws, so there's no flash of the wrong theme. */
+(function(){try{var r=document.documentElement,s=JSON.parse(localStorage.getItem('clearbridge-accessibility-v1')||'null')||{};
+var m=function(q){try{return matchMedia(q).matches}catch(e){return false}};
+var dark=typeof s.darkMode==='boolean'?s.darkMode:m('(prefers-color-scheme: dark)');
+var hc=typeof s.highContrast==='boolean'?s.highContrast:m('(prefers-contrast: more)');
+var rm=typeof s.reduceMotion==='boolean'?s.reduceMotion:m('(prefers-reduced-motion: reduce)');
+r.dataset.theme=dark?'dark':'light';r.style.colorScheme=dark?'dark':'light';r.dataset.textSize=s.textSize||'medium';
+if(hc)r.dataset.contrast='high';if(rm)r.dataset.reduceMotion='true';if(s.dyslexiaFont)r.dataset.dyslexia='true';
+if(s.language)r.lang=s.language;}catch(e){}})();
+</script></head><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>
