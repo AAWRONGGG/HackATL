@@ -1,0 +1,31 @@
+/* Scoped to the new banner; all existing BizBridge styles remain intact. */
+.bb-readiness-hero.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(20px, 5vw, 70px);
+  padding: clamp(28px, 4vw, 52px);
+  background: linear-gradient(110deg, #12634e 0%, #197b60 100%);
+  color: #fff;
+  overflow: hidden;
+}
+.bb-readiness-copy { min-width: 0; flex: 1; }
+.bb-readiness-kicker {
+  display: flex; align-items: center; gap: 9px;
+  color: #c8e9dc; font-size: .73rem; font-weight: 800; letter-spacing: .13em;
+  margin-bottom: 20px;
+}
+.bb-readiness-hero h2 { max-width: 550px; margin: 0 0 12px; color: white; font-size: clamp(1.7rem, 3vw, 2.65rem); line-height: 1.13; letter-spacing: -.035em; }
+.bb-readiness-hero p { max-width: 560px; margin: 0 0 25px; color: #e2f4ec; font-size: .94rem; line-height: 1.55; }
+.bb-readiness-action { display: inline-flex; align-items: center; gap: 9px; }
+.bb-readiness-visual { width: clamp(175px, 25%, 255px); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.bb-readiness-ring { width: min(100%, 235px); height: auto; }
+.bb-readiness-number { font-size: 28px; font-weight: 800; fill: #fff; letter-spacing: -.04em; }
+.bb-readiness-ring-label { font-size: 10px; font-weight: 600; fill: #d1f1e5; }
+.bb-readiness-caption { max-width: 210px; color: #dbf2e8; text-align: center; font-size: .78rem; line-height: 1.4; }
+@media (max-width: 650px) {
+  .bb-readiness-hero.hero { flex-direction: column-reverse; align-items: stretch; gap: 8px; }
+  .bb-readiness-visual { width: 150px; align-self: flex-start; }
+  .bb-readiness-kicker { margin-bottom: 12px; }
+  .bb-readiness-hero p { margin-bottom: 18px; }
+}

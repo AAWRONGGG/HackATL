@@ -5,6 +5,7 @@ import {
   RotateCcw, ShieldCheck
 } from "lucide-react";
 import "./FindExperts.css";
+import "./Readiness.css";
 
 const industries = ["All industries", "Food & Restaurants", "Retail", "Technology", "Construction", "Healthcare"];
 const services = ["All services", "Accounting & Taxes", "Legal Services", "Marketing", "Business Consulting", "Permits & Licensing"];
