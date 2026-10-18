@@ -1,324 +1,116 @@
-# BizBridge — Business Made Simpler
+﻿# BizBridge - Business Made Simpler
 
-**An AI-powered business guidance platform helping entrepreneurs navigate registration, licensing, permits, and paperwork with confidence.**
+An accessible business guidance platform built for HackATL 2026 with React/Vite, FastAPI, Google Gemini, local document classification, and ElevenLabs voice tools.
 
-Built for HackATL 2026.
+## What works
 
-## The Problem
+- **Dashboard:** business workspace, checklist progress, and navigation.
+- **Requirements:** "Your business checklist" collects a business profile and generates requirements for supported businesses inside Atlanta city limits. Required evidence and applicability reviews remain separate; checklist results are not legal determinations. The jurisdiction disclaimer appears at the bottom.
+- **Document review:** upload a PDF or supported document photo, inspect the predicted type and classification score, and correct extracted business names, addresses, document numbers, and dates. Once available, results appear beside the upload controls on desktop and above them on mobile; the chatbot stays below.
+- **Gemini assistant:** ask business questions and follow source links when available. Reviewed document details accompany questions only after explicit opt-in. Enabling that option moves focus to the chatbot; replacing or clearing a document resets sharing.
+- **Voice input:** click the microphone, speak, and pause to transcribe with ElevenLabs. The transcript stays editable; Send submits the question. Compact finish/cancel controls appear beside Send during recording. Answer playback has separate per-answer consent and Play/Pause controls.
+- **Accessibility:** open the account avatar menu, then **Accessibility settings** for text sizes, dark mode, high contrast, OpenDyslexic font, reduced motion, and language selection. Settings persist per device. Languages: English, Spanish, Hindi, Vietnamese, Korean, Simplified Chinese, French, and Portuguese.
+- **Deadlines and Find Experts:** deadline tracking and searchable expert listings. Expert profiles, ratings, business names, and distances remain fictional demo data; supported search locations are Atlanta, Austin, and Seattle (30303, 78701, 98101). Live listings and personal LinkedIn connections are not connected.
 
-Starting a small business can be overwhelming, especially for first-time entrepreneurs, older adults, and people unfamiliar with government procedures.
+## Repository and services
 
-Business owners often need to navigate multiple government websites, understand complicated requirements, organize documents, and keep track of deadlines.
+The current BizBridge application is **`clearbridge-frontend/`**. Other frontend directories are earlier implementations.
 
-Important information is scattered across agencies, and legal or regulatory language can be difficult to understand.
+| Directory | Purpose | Local port |
+| --- | --- | --- |
+| `clearbridge-frontend/` | React/Vite UI | 5173 |
+| `ml/backend/` | Gemini chat, PDF/photo analysis, ElevenLabs proxy | 8000 |
+| `clearbridge-backend/` | OpenAI page translation | 8001 |
+| `ml/models/` | Trusted local document classifier |
+| `ml/sample_documents/` | Fictional test PDFs and measured sample results |
+| `ml/tests/` | Backend tests |
 
-**BizBridge aims to make that process simpler, more accessible, and easier to navigate.**
+Documents use PyMuPDF, scikit-learn, and label-based field extraction. Photos use local RapidOCR before the same classifier/extractor. Audio validation uses bundled FFmpeg. Provider credentials stay server-side.
 
-## Our Solution
+## Local setup
 
-BizBridge combines AI-powered business guidance, structured compliance information, document analysis, and accessibility-focused design in one platform.
+Prerequisites: Python 3.12, Node.js/npm, and Git. Run commands from the repository root unless noted.
 
-Instead of searching through government websites individually, entrepreneurs can ask questions in natural language, explore relevant requirements, and find official resources.
-
-The platform is designed to support entrepreneurs throughout their business journey, from initial registration to document preparation and compliance planning.
-
-## Features
-
-### 1. AI Compliance Assistant — Working Prototype
-
-Powered by Google Gemini and FastAPI, the assistant helps users:
-
-- Ask questions about starting and operating a business.
-- Understand business registration and licensing procedures.
-- Explore potential permit and documentation requirements.
-- Receive explanations in accessible language.
-- Access references to official Georgia and Atlanta government resources.
-
-The assistant generates informational guidance rather than making definitive legal or compliance determinations.
-
-### 2. Business Dashboard
-
-A centralized workspace for navigating business-related activities and resources.
-
-### 3. Requirements and Deadlines
-
-Provides an interface for exploring business requirements, reviewing next steps, and tracking regulatory tasks.
-
-### 4. Document Management — Prototype
-
-The frontend includes a document-selection interface. The backend provides document classification and information extraction capabilities.
-
-Full frontend-to-document-analysis integration is a planned improvement.
-
-### 5. ML-Powered Document Analysis — Backend Implemented
-
-The document-analysis backend uses a trained machine-learning classifier to identify document types from extracted PDF text.
-
-Current capabilities include:
-
-- PDF text extraction using PyMuPDF.
-- Machine-learning document classification.
-- Candidate information extraction using pattern matching.
-- Identification of potential business names, addresses, document numbers, and dates.
-- Returning document-analysis results requiring human review.
-
-Current limitations include a 10 MB file-size limit, a 20-page limit, and no OCR support for image-only scanned PDFs.
-
-### 6. Accessibility
-
-BizBridge includes accessibility-focused interface features, including configurable presentation settings designed to improve readability and usability.
-
-### 7. Find Experts
-
-An interface for exploring relevant professional assistance and business-support resources.
-
-## Technology Stack
-
-| Layer | Technologies |
-|---|---|
-| Frontend | React, Vite, JavaScript, CSS |
-| Backend | Python, FastAPI, Uvicorn |
-| Generative AI | Google Gemini API |
-| Machine Learning | scikit-learn, joblib |
-| Document Processing | PyMuPDF, regular expressions |
-| Accessibility | React accessibility components, OpenDyslexic font |
-| Icons | Lucide React |
-| Version Control | Git and GitHub |
-
-## System Architecture
-
-```text
-                 Business Owner
-                       |
-                       v
-               BizBridge Frontend
-                  React + Vite
-                       |
-             ---------------------
-             |                   |
-             v                   v
-       AI Assistant         Business Workspace
-             |             Requirements / Deadlines
-             |             Documents / Find Experts
-             v
-        FastAPI Backend
-             |
-       ------------------
-       |                |
-       v                v
-  Gemini Chat API   Document Analysis
-       |                |
-       v                v
-  AI Responses      PDF Text Extraction
-  + References      ML Classification
-                    Candidate Fields
-```
-
-## Project Structure
-
-```text
-HackATL/
-|
-|-- src/                       # Root React frontend
-|-- clearbridge-frontend/      # Additional frontend implementation
-|-- frontend/                  # Additional frontend directory
-|
-|-- ml/
-|   |-- backend/
-|   |   |-- main.py            # FastAPI application
-|   |   |-- chat.py            # Gemini AI chatbot
-|   |   `-- __init__.py
-|   |
-|   |-- models/                # Trained document classifier
-|   |-- data/                  # ML data
-|   |-- evaluation/            # Model evaluation
-|   |-- notebooks/             # ML experiments
-|   |-- tests/                 # Backend tests
-|   `-- requirements.txt       # Python dependencies
-|
-|-- index.html
-|-- package.json
-|-- .env.example               # Optional configuration template
-`-- README.md
-```
-
-**Note:** The repository currently contains multiple frontend implementations. The root Vite frontend is the version used for the demonstrated local Gemini chat integration.
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js and npm
-- Python 3.12
-- Git
-- Google Gemini API key
-
-### 1. Clone the Repository
-
-```bash
+```powershell
 git clone https://github.com/AAWRONGGG/HackATL.git
 cd HackATL
-```
-
-### 2. Install Frontend Dependencies
-
-```bash
-npm install
-```
-
-### 3. Set Up the Python Environment
-
-On Windows PowerShell:
-
-```powershell
 py -3.12 -m venv .venv312
-.\.venv312\Scripts\Activate.ps1
+.\.venv312\Scripts\python.exe -m pip install -r ml/requirements.txt
+.\.venv312\Scripts\python.exe -m pip install -r clearbridge-backend/requirements.txt
 ```
 
-Install backend dependencies:
+Configure these names privately in the ML backend's process environment or `ml/backend/.env`:
+
+- `GEMINI_API_KEY`: required for chat.
+- `BIZBRIDGE_GEMINI_MODEL`: optional override; choose a model available to your API project.
+- `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID`: required for voice features.
+- `BIZBRIDGE_CORS_ORIGINS`: comma-separated browser origins if using direct cross-origin API calls.
+
+ML configuration precedence is process environment, then `ml/backend/.env`, then the repository-root `.env` for missing values. Restart the service after changing configuration. The voice variable names are also listed in `ml/backend/.env.example` with empty values. Never commit secrets or expose provider keys through `VITE_*` variables.
+
+For translation, configure `OPENAI_API_KEY` in `clearbridge-backend/.env` or its process environment. `OPENAI_MODEL` is optional; `CORS_ORIGINS` controls allowed frontend origins for that separate service.
+
+Start each service in a separate terminal:
 
 ```powershell
-python -m pip install -r ml/requirements.txt
-python -m pip install google-genai python-dotenv
+# ML backend
+.\.venv312\Scripts\python.exe -m uvicorn ml.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
-
-### 4. Configure Environment Variables
-
-Create a `.env` file in the repository root:
-
-```env
-GEMINI_API_KEY=your_gemini_api_key
-BIZBRIDGE_GEMINI_MODEL=your_available_gemini_model
-BIZBRIDGE_CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
-```
-
-Use a Gemini model that is available to your API project.
-
-Create `.env.local` for the root Vite frontend:
-
-```env
-VITE_BIZBRIDGE_API_URL=http://localhost:8000
-```
-
-**Security:** Never commit API keys or environment files containing secrets to GitHub.
-
-### 5. Start the FastAPI Backend
-
-Run from the repository root:
 
 ```powershell
-.\.venv312\Scripts\python.exe -m uvicorn ml.backend.main:app --reload --port 8000
+# Translation backend
+cd clearbridge-backend
+..\.venv312\Scripts\python.exe -m uvicorn main:app --reload --port 8001
 ```
 
-Backend URL: `http://localhost:8000`
-
-Interactive API documentation: `http://localhost:8000/docs`
-
-### 6. Start the React Frontend
-
-Open another terminal:
-
-```bash
+```powershell
+# Current frontend
+cd clearbridge-frontend
+npm install
 npm run dev
 ```
 
-Visit `http://localhost:5173`.
+Open `http://localhost:5173`. ML health and interactive API docs are at `http://127.0.0.1:8000/health` and `/docs`; translation health is at `http://127.0.0.1:8001/health`.
 
-### 7. Test the AI Assistant
+Vite proxies chat, document/photo analysis, and voice requests to port 8000 during development. Translation connects directly to port 8001; override its URL with `VITE_TRANSLATION_API_URL` when needed. For LAN testing, that URL must be reachable from the other device and allowed by translation CORS. Microphones require HTTPS or localhost.
 
-Open the AI Assistant page and ask:
+Production hosting must provide equivalent `/api` routing or set a browser-reachable `VITE_AI_API_URL` at build time and allow the frontend origin in backend CORS. Vite's development proxy is not a production proxy. See [frontend documentation](clearbridge-frontend/README.md) for interaction and API details.
 
-> I want to open a small restaurant in Atlanta. What licenses and permits should I check first?
+## ML API
 
-The frontend sends the question to the FastAPI backend, which calls Gemini and returns a generated answer with relevant reference links.
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/health` | Service and model-file availability |
+| POST | `/api/chat` | Gemini guidance and source links |
+| POST | `/api/analyze-document` | Multipart PDF upload, field `file` |
+| POST | `/api/classify-document` | Compatible PDF classification endpoint |
+| POST | `/api/analyze-image` | Multipart document photo, field `file` |
+| POST | `/api/voice/transcribe` | Audio transcription with explicit consent |
+| POST | `/api/voice/speak` | Answer audio with explicit consent |
 
-## API Endpoints
+## Verification
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/health` | Backend health and model-file availability |
-| POST | `/api/chat` | AI business guidance |
-| POST | `/api/analyze-document` | PDF document analysis |
-| POST | `/api/classify-document` | Compatible document-classification endpoint |
-
-### Chat API Example
-
-**Request**
-
-```json
-{
-  "message": "What permits might I need to open a restaurant in Atlanta?"
-}
+```powershell
+.\.venv312\Scripts\python.exe -m pip install pytest
+.\.venv312\Scripts\python.exe -m pytest ml/tests -q
+cd clearbridge-frontend
+npm run build
 ```
 
-**Response structure**
+Manual smoke test:
 
-```json
-{
-  "answer": "AI-generated guidance...",
-  "sources": [
-    {
-      "title": "Official government resource",
-      "url": "https://example.gov/resource"
-    }
-  ],
-  "requires_review": true
-}
-```
+1. Open Dashboard, Requirements, AI Assistant, Deadlines, and Find Experts. Check the heading/profile alignment, account menu, and mobile layout.
+2. Open Accessibility settings and test dark mode, contrast, keyboard navigation, and Hindi translation with the translation service running.
+3. Upload a [sample PDF](ml/sample_documents/README.md), review the real score/fields, and edit a field. Enable document sharing and submit a question; clear/replace the file to verify consent resets.
+4. Test microphone permission, speech/pause transcription, cancellation, editable text, and explicit Send on localhost/HTTPS. Test answer playback with a configured voice. Check native camera capture on a supported mobile device.
 
-The response is illustrative. Actual answers and source references vary by question.
+## Limits and responsible use
 
-## Current Limitations
-
-- AI guidance is informational and requires verification with official government agencies.
-- Source links are drawn from curated reference information rather than live verification of every generated claim.
-- The chat prototype does not yet provide persistent conversation memory.
-- Document classification and the website's document interface are not yet fully integrated.
-- Image-only scanned PDFs require OCR support, which is not implemented in the current document-analysis backend.
-- A publicly accessible FastAPI deployment is needed before remote users can use the Gemini chatbot through a deployed frontend.
-- Public deployment should include authentication or appropriate abuse protection, rate limiting, and secure handling of uploaded business documents.
-
-## Future Improvements
-
-**AI and business guidance**
-- Personalized compliance roadmaps based on business type and location.
-- Conversation memory for contextual follow-up questions.
-- Retrieval-augmented generation using vetted government information.
-- AI-assisted document gap detection.
-
-**Document intelligence**
-- Direct frontend integration with PDF classification.
-- OCR support for scanned documents.
-- Document completeness checks.
-- Human-review workflows and clearer classification explanations.
-
-**Accessibility**
-- ElevenLabs-powered voice assistance.
-- Multilingual spoken guidance.
-- Speech-rate adjustment and repeat controls.
-- Simplified instructions for users unfamiliar with business procedures.
-
-**Deployment**
-- Deploy FastAPI to a secure cloud host.
-- Connect the deployed frontend to the public backend.
-- Add monitoring, testing, and rate limiting.
-
-## Responsible AI
-
-BizBridge is designed to help users understand business processes, not replace licensed professionals or government agencies.
-
-AI-generated guidance may be incomplete or outdated. Business owners should verify licensing requirements, fees, deadlines, and legal obligations directly with the relevant authorities.
-
-Document classification and extracted fields are provisional and require human confirmation.
-
-## HackATL 2026
-
-BizBridge demonstrates how generative AI, machine learning, and accessible user interfaces can work together to reduce the complexity of starting and managing a small business.
-
-**Our mission: Make business guidance understandable and accessible, one step at a time.**
-
----
-
-Built with React, FastAPI, Google Gemini, and Python.
-
-**GitHub:** https://github.com/AAWRONGGG/HackATL
+- Requirements support Atlanta city limits only; confirm legal obligations, applicability, fees, and deadlines with agencies or qualified professionals.
+- Classification scores are **not calibrated confidence or measured accuracy**. Extracted fields and review statuses are provisional, not proof of compliance or permit validity. Sample scores are recorded honestly; training-derived samples are not independent evaluation.
+- PDFs: 10 MB, 20 pages, unencrypted, text-selectable. Image-only scanned PDFs are unsupported; attach a supported photo or provide a text-selectable PDF instead.
+- Photos: JPEG, PNG, or WebP, 10 MB / 20 megapixels. Local OCR supports printed Latin text best (English/Spanish); Hindi-script photo OCR is unsupported even though the UI supports Hindi.
+- Voice: supported decoded audio is limited to 12 MB / 60 seconds. Transcription language options are English, Hindi, and Spanish. Silence detection normally finishes after a 1.6-second pause; device/browser behavior varies.
+- The app does not persist uploaded contents, recordings, edited document fields, transcripts, or generated audio. Explicitly shared questions/details go to Gemini, recordings to ElevenLabs for transcription, and selected answers to ElevenLabs for playback. Provider retention follows the provider account's policies.
+- Avoid sensitive IDs. Source links and AI responses require verification. Persistent conversation memory and live expert search are not implemented.
+- Public deployment still requires appropriate access controls, abuse protection, rate limiting, and operational monitoring.

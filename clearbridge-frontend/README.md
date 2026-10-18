@@ -1,117 +1,62 @@
-to run frontend: npm run dev
+﻿# BizBridge frontend
 
-## Accessibility settings
+The current React/Vite application lives in this directory. See the [repository README](../README.md) for the complete three-service setup and feature overview.
 
-The **Accessibility** button in the header (every page) controls text size, dark mode, high contrast,
-a dyslexia-friendly font (OpenDyslexic), reduced motion, and language. Settings are saved per device and
-start from the device's own dark-mode / reduced-motion / contrast settings.
-
-- Code: `src/accessibility/` (settings, panel, page translator) and `src/accessibility/accessibility.css`.
-- New pages only need normal class names; to keep text from being translated, add `data-no-translate`.
-
-## Connecting the backend (translation)
-
-Translation goes through the BizBridge backend's `/translate` endpoint (Claude now, your own model later).
-Run the backend on port 8000, or point the app elsewhere with `VITE_API_URL` in `.env.local`:
-
-```
-VITE_API_URL=http://localhost:8000
-```
-
-Without the backend, everything else works; picking a language shows a message asking you to start it.
-
-
-## Document review (React/Vite)
-
-From the repository root, use the working Python 3.12 environment:
+## Run and build
 
 ```powershell
-.\.venv312\Scripts\python.exe -m pip install -r ml\requirements.txt
-.\.venv312\Scripts\python.exe -m uvicorn ml.backend.main:app --host 127.0.0.1 --port 8000
+npm install
+npm run dev
+npm run build
 ```
 
-Then run `npm run dev` inside `clearbridge-frontend`. Vite forwards
-`/api/analyze-document` to the document-analysis service on port 8000.
-Restart Vite after adding or changing its configuration. This same-origin upload
-also works when opening the frontend's LAN address from another device.
-Document uploads always use this proxy during development, even if
-`VITE_AI_API_URL` is configured, so LAN pages never bypass it with a loopback request.
-For production builds, `VITE_AI_API_URL` still takes precedence; a direct cross-origin
-URL must be reachable from the browser and permitted by the backend's CORS settings.
-Production hosting must forward `/api/analyze-document` to the ML backend, or use
-a reachable `VITE_AI_API_URL` override. Vite's development proxy is not a production proxy.
+Vite serves the UI on port 5173. Run `ml.backend.main:app` on port 8000 and the separate `clearbridge-backend` translation service on port 8001.
 
-`GET http://127.0.0.1:8000/health` should report the model file is present.
-Upload a text-selectable PDF (maximum 10 MB / 20 pages). The API accepts multipart
-`file`, uses the existing local classifier and label-based field extractor, and
-returns unverified candidates. It does not send the PDF to Gemini. Extracted details
-are included in a chat question only after selecting the consent checkbox;
-a new review resets consent. Image-only scans require OCR, which is not supported.
+## Headers and accessibility
 
-A connection error means the browser or Vite could not reach document review;
-check the ML backend terminal and port 8000. Invalid PDF and OCR errors come from
-the backend and appear in the review section. The separate translation service
-on port 8001 is unchanged.
+Pages share a heading/profile layout without an empty top header. The account avatar menu contains **Accessibility settings** above Sign out. The existing panel controls text size, dark mode, high contrast, OpenDyslexic font, reduced motion, and all supported UI languages, including Hindi. Settings are stored per device.
 
+Accessibility code is in `src/accessibility/`. Add `data-no-translate` to content that must retain its original text. User messages, answers, filenames, and extracted field values are excluded from automatic page translation.
 
-## Multimodal assistant
+Translation uses OpenAI through the separate `/translate` endpoint. Its default base URL is `http://127.0.0.1:8001`; override with `VITE_TRANSLATION_API_URL`. A LAN client needs a reachable translation URL and an allowed CORS origin.
 
-The AI page uses one multiline composer (Enter to send, Shift+Enter for a new line).
-The + button accepts PDFs and JPEG/PNG/WebP photos; Camera opens the device's native
-capture/file chooser only after it is clicked. Selecting a file runs local analysis.
-Review and correct the fields before enabling their inclusion with Gemini questions.
-Removing/replacing a document resets sharing. User questions, answers, filenames, and
-field values are excluded from automatic page translation; Gemini answers in the
-selected UI language, and all existing UI languages remain available.
+## Document review and chat
 
-Photo OCR runs locally with the bundled RapidOCR model, then reuses the PDF classifier
-and field extractor. It is best for clear printed Latin text (English/Spanish), and
-**does not support Hindi-script photos**. Photos are limited to 10 MB / 20 megapixels.
-PDF limits remain 10 MB / 20 pages; image-only PDFs still need a text-selectable PDF
-or a separately attached supported photo. AI-generated results require verification.
+Document review appears above the chatbot. With results available, desktop shows results on the left and file controls on the right; mobile stacks results first. Uploads reuse the real local classifier and field extractor. Scores are not calibrated confidence, and detected fields require review.
 
-Install updated `ml/requirements.txt` and restart the ML backend. The app does not
-persist document contents, edited fields, recordings, transcripts, or generated audio.
-ElevenLabs may retain provider requests under its own account policies; this app does
-not claim provider zero-retention mode.
+- PDF: text-selectable, unencrypted, up to 10 MB / 20 pages. Image-only scanned PDFs are unsupported.
+- Photo: JPEG/PNG/WebP, up to 10 MB / 20 megapixels. RapidOCR runs locally; printed English/Spanish works best, Hindi-script photos are unsupported.
+- The document controls require **Review Document**. Attaching through the chat composer's + or Camera control starts analysis on selection. Camera uses native device capture where supported; desktop may show a file chooser.
+- Correct fields before checking the option to include reviewed details with Gemini questions. This focuses the chatbot below. Sharing is opt-in and resets when a document is cleared/replaced or newly reviewed.
+- Enter sends a question; Shift+Enter adds a line. Questions are not automatically sent after upload or transcription. Source links appear when supplied by the backend.
 
-### Voice setup (backend only)
+## Voice
 
-`ml/backend/.env.example` lists variable names without values. Configure
-`ELEVENLABS_API_KEY` and an accessible `ELEVENLABS_VOICE_ID` in the **ML backend's
-process environment**, then restart it. Never put these into `VITE_*` variables.
-No existing environment files need to be edited by this implementation.
+Configure `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` on the ML backend only, then restart it. Never use `VITE_*` variables for provider keys.
 
-- `POST /api/voice/transcribe`: multipart `file`, `language` (`en`, `hi`, `es`), and
-  explicit `consent=true`. Uses ElevenLabs `scribe_v2`.
-- `POST /api/voice/speak`: JSON `text`, `language`, `consent=true`. Uses the configured
-  voice and `eleven_multilingual_v2` (the answer's own language determines playback).
-- Audio supports WebM, Ogg, WAV, MP4/M4A, and MP3, capped at 12 MB and 60 seconds.
-  Content is decoded locally using the bundled FFmpeg executable before transcription;
-  browser-provided MIME, filename, and duration alone are not trusted.
+Click Mic, speak, then pause. Local silence detection ends recording after a 1.6-second pause and automatically requests ElevenLabs transcription. No-speech recording stops after 8 seconds; recording always ends before 60 seconds. Compact finish/cancel icons beside Send provide manual control, including when silence detection is unavailable. Transcribed text remains editable and Send is separate.
 
-Click Mic to start the disclosed ElevenLabs transcription flow. Speak and pause;
-local silence detection stops the recording and transcribes automatically. Done
-also finishes and transcribes; Cancel discards/aborts. There is no separate recording
-preview or transcription checkbox. Text stays editable and is not sent to Gemini
-until Send is pressed. Silence detection uses a 1.6-second pause after speech;
-recordings with no detected speech stop after 8 seconds, and all recordings stop
-before 60 seconds. If silence detection is unavailable, use Done.
-Listen retains its per-answer consent and Play/Pause controls. Missing credentials
-produce actionable errors, never fake transcripts or audio.
-Checking the document-sharing option focuses the chatbot below the results.
+Microphones need HTTPS or localhost. Transcription supports English, Hindi, and Spanish. Answer playback requires separate per-answer consent and provides Play/Pause controls. Errors remain visible; routine transcript announcements are available to screen readers without extra visible instructional text.
 
+The app does not persist recordings or generated audio. Provider retention is governed by the provider account's policies. Test physical microphone/camera behavior on the target device.
 
-Microphones require **HTTPS or localhost**. Recording on an HTTP LAN URL is blocked
-by browsers and the UI explains the limitation. Camera capture requires a supported
-mobile browser and is tested via a native capture input; desktop may open a file chooser.
-Physical microphone/camera behavior and live ElevenLabs output must be checked on the
-target device after configuring the voice service.
+## API routing
 
-Vite proxies `/api/chat`, `/api/analyze-document`, `/api/analyze-image`, and `/api/voice`
-to port 8000. Translation remains on its existing port 8001 connection. Production
-must supply equivalent routing or a reachable `VITE_AI_API_URL`.
+Development always uses Vite's same-origin proxy for `/api/chat`, `/api/analyze-document`, `/api/analyze-image`, and `/api/voice`, targeting `http://127.0.0.1:8000`. This avoids browser loopback requests to the wrong device when using a LAN frontend address.
 
-Provider references: [ElevenLabs transcription](https://elevenlabs.io/docs/api-reference/speech-to-text/convert),
-[speech synthesis](https://elevenlabs.io/docs/api-reference/text-to-speech/convert), and
-[supported models/languages](https://elevenlabs.io/docs/overview/models).
+Production must provide equivalent routing or a reachable `VITE_AI_API_URL` at build time, with backend CORS allowing the frontend origin. The development proxy does not run in a production build.
+
+Voice API contracts:
+
+- `POST /api/voice/transcribe`: multipart `file`, `language` (`en`, `hi`, `es`), `consent=true`; ElevenLabs `scribe_v2`.
+- `POST /api/voice/speak`: JSON `text`, `language`, `consent=true`; configured voice with `eleven_multilingual_v2`.
+- Audio supports decoded WebM, Ogg, WAV, MP4/M4A, and MP3, up to 12 MB / 60 seconds. The server validates content using bundled FFmpeg.
+
+## Troubleshooting
+
+- **Cannot connect to document review:** check ML `/health`, port 8000, model availability, and Vite/backend terminals. Restart Vite after proxy changes.
+- **Chat unavailable:** check server-side Gemini configuration and provider availability/quota; missing configuration and transient failures return helpful errors rather than fabricated answers.
+- **Voice unavailable:** verify both ElevenLabs settings and voice access, restart the ML service, and check microphone permission/secure origin.
+- **Language changes fail:** verify the separate translation service on port 8001 and its URL/CORS configuration.
+
+Use [sample PDFs](../ml/sample_documents/README.md) for document testing. Run `npm run build` here and backend tests from the repository root as described in the main README.
