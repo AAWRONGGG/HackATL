@@ -1,3 +1,4 @@
+import PageHeader from './PageHeader.jsx';
 import React, {useEffect, useMemo, useState} from 'react';
 import {CalendarClock, ArrowRight, ExternalLink, Info, AlertCircle} from 'lucide-react';
 import {getRequirements, RULESET_VERSION, REQUIREMENTS_STORAGE_KEY} from '../services/requirementsEngine.js';
@@ -12,7 +13,7 @@ function load(key){try{return JSON.parse(window.localStorage.getItem(key)||'null
 const pretty = iso => iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}) : '';
 const today = () => new Date().toISOString().slice(0,10);
 
-export default function RequirementDeadlines({onOpenRequirements=()=>{}}) {
+export default function RequirementDeadlines({onOpenRequirements=()=>{}, ...headerControls}) {
   const [stored,setStored]=useState(()=>load(STORE));
   const [checklist,setChecklist]=useState(loadChecklist);
   const [progress,setProgress]=useState(getRequirementProgress);
@@ -58,7 +59,12 @@ export default function RequirementDeadlines({onOpenRequirements=()=>{}}) {
   const renewals=settings.includeRenewals?getOccupationalRenewal(futureRenewalYear):[];
   const update=(key,value)=>setSettings(s=>({...s,[key]:value}));
   return <div className="cb-deadlines">
-    <div className="cb-d-head"><div><span className="cb-d-kicker"><CalendarClock size={16}/> COMPLIANCE CALENDAR</span><h1>Deadlines & key dates</h1><p>Know what must be filed before opening, what renews annually, and what still requires confirmation.</p></div></div>
+    <PageHeader
+      {...headerControls}
+      title="Deadlines & key dates"
+      eyebrow={<span className="cb-d-kicker"><CalendarClock size={16}/> COMPLIANCE CALENDAR</span>}
+      description="Know what must be filed before opening, what renews annually, and what still requires confirmation."
+    />
     <div className="cb-d-note"><Info size={18}/><span>Deadlines come from official rules where possible. A permit needed <b>before opening</b> is not the same as an application submission deadline. AI-identified documents do not prove compliance.</span></div>
     {!valid?<div className="cb-d-empty"><CalendarClock size={30}/><h2>Generate a checklist first</h2><p>Tell BizBridge about your Atlanta business to display applicable dates.</p><button onClick={onOpenRequirements}>Set up requirements <ArrowRight size={16}/></button></div>:<>
       <div className="cb-d-settings"><div className="cb-d-title"><h2>Set your business timeline</h2><p>These dates allow us to calculate filing windows that depend on your circumstances.</p></div><div className="cb-d-inputs"><label>Planned opening date<input type="date" value={settings.openingDate} onChange={e=>update('openingDate',e.target.value)}/></label><label>Legal entity formation date<input type="date" value={settings.formationDate} onChange={e=>update('formationDate',e.target.value)}/></label></div><label className="cb-d-renew"><input type="checkbox" checked={settings.includeRenewals} onChange={e=>update('includeRenewals',e.target.checked)}/> Include Atlanta Occupational Tax Certificate renewal reminders (only if already issued)</label></div>

@@ -1,8 +1,9 @@
+import PageHeader from './components/PageHeader.jsx';
 import React, { useState } from "react";
 import {
   Search, MapPin, BriefcaseBusiness, SlidersHorizontal,
   Star, Globe, Mail, ArrowUpRight, Users,
-  RotateCcw, ShieldCheck
+  RotateCcw
 } from "lucide-react";
 import "./FindExperts.css";
 import "./Readiness.css";
@@ -37,7 +38,7 @@ function findDemoLocation(input) {
   );
 }
 
-export default function FindExperts() {
+export default function FindExperts(headerControls) {
   const [industry, setIndustry] = useState("All industries");
   const [service, setService] = useState("All services");
   const [location, setLocation] = useState("Atlanta, GA");
@@ -67,9 +68,12 @@ export default function FindExperts() {
 
   return (
     <section className="fe-page">
-      <div className="fe-topline"><BriefcaseBusiness size={16} /> CLEARBRIDGE EXPERT NETWORK</div>
-      <h1>Find the right expert for your business.</h1>
-      <p className="fe-subtitle">Explore professional services based on your industry, location, and business needs.</p>
+      <PageHeader
+        {...headerControls}
+        title="Find the right expert for your business."
+        eyebrow={<div className="fe-topline"><BriefcaseBusiness size={16} /> CLEARBRIDGE EXPERT NETWORK</div>}
+        description="Explore professional services based on your industry, location, and business needs."
+      />
 
       <form className="fe-search" onSubmit={search}>
         <div className="fe-search-title"><SlidersHorizontal size={19} /> Match with an expert</div>
@@ -99,7 +103,6 @@ export default function FindExperts() {
         </div>
       </form>
 
-      <div className="fe-info"><ShieldCheck size={18} /><span><strong>Demo directory:</strong> All experts, ratings, distances, and business names shown here are fictional. Search works for Atlanta, GA; Austin, TX; and Seattle, WA (or ZIP codes 30303, 78701, 98101). Live local search will be added next.</span></div>
 
       {filters ? (
         <div className="fe-results">
@@ -129,9 +132,7 @@ export default function FindExperts() {
             </div>
           )}
         </div>
-      ) : (
-        <div className="fe-prompt"><Search size={24}/><h3>Your next connection starts here</h3><p>Choose your industry, service, and location above to explore matching demo profiles.</p></div>
-      )}
+      ) : null}
     </section>
   );
 }

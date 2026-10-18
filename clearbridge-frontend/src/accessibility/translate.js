@@ -65,6 +65,7 @@ class PageTranslator {
   }
 
   setLanguage(lang) {
+    clearTimeout(this.pending);
     this.language = lang;
     this.runId += 1;
     if (lang === 'en') {
@@ -95,7 +96,10 @@ class PageTranslator {
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const value = node.nodeValue;
       const known = this.textNodes.get(node);
-      if (known && value === known.applied) continue; // already shows our translation
+      if (known && value === known.applied) {
+        if (known.language !== this.language) items.push({ kind: 'text', node, entry: known });
+        continue;
+      }
       if (!shouldTranslate(value) || isSkipped(node.parentElement)) continue;
       const entry = { original: value, applied: null };
       this.textNodes.set(node, entry);
@@ -108,7 +112,10 @@ class PageTranslator {
       for (const attr of ATTRIBUTES) {
         const value = el.getAttribute(attr);
         if (value == null) continue;
-        if (record?.[attr] && value === record[attr].applied) continue;
+        if (record?.[attr] && value === record[attr].applied) {
+          if (record[attr].language !== this.language) items.push({ kind: 'attr', el, attr, entry: record[attr] });
+          continue;
+        }
         if (!shouldTranslate(value)) continue;
         record = record || {};
         record[attr] = { original: value, applied: null };
@@ -127,6 +134,7 @@ class PageTranslator {
       if (!translated) continue;
       const text = lead + translated + trail;
       item.entry.applied = text;
+      item.entry.language = this.language;
       if (item.kind === 'text') {
         if (item.node.isConnected) item.node.nodeValue = text;
       } else if (item.el.isConnected) {

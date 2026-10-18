@@ -4,6 +4,10 @@
 
 /* ---------- Accessibility button and panel ---------- */
 .a11y { position: relative; margin-left: auto; margin-right: 14px; }
+.account { margin-left: auto; }
+.a11y-account { position: static; margin: 0; }
+.account-menu { max-width: calc(100vw - 32px); }
+.account-menu button { min-height: 44px; }
 .a11y-trigger {
   display: inline-flex; align-items: center; gap: 8px; min-height: 40px;
   border: 1px solid #d5e3dc; background: #fff; color: #1d5c49; border-radius: 9px;
@@ -12,7 +16,8 @@
 .a11y-trigger:hover { background: #f3f8f5; }
 .a11y-panel {
   position: absolute; right: 0; top: calc(100% + 10px); z-index: 50; width: 340px;
-  max-height: calc(100vh - 110px); overflow: auto;
+  max-height: calc(100dvh - 110px); overflow: auto;
+  max-width: calc(100vw - 24px);
   background: #fff; color: #1e3032; border: 1px solid #dfe8e3; border-radius: 14px;
   box-shadow: 0 18px 40px rgba(20, 45, 38, .16); padding: 18px;
 }
@@ -50,6 +55,7 @@
 
 @media (max-width: 700px) {
   .a11y { margin-right: 10px; }
+  .a11y-account { margin: 0; }
   .a11y-trigger span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .a11y-trigger { width: 42px; padding: 0; justify-content: center; }
   .a11y-panel { position: fixed; left: 12px; right: 12px; top: 84px; width: auto; }

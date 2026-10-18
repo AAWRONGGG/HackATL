@@ -1,3 +1,4 @@
+import PageHeader from './components/PageHeader.jsx';
 import React, { useState } from 'react';
 import {
   ArrowRight, CalendarDays, ClipboardCheck, MessageCircle, UploadCloud,
@@ -11,11 +12,6 @@ import {
   getRequirementProgress,
   setRequirementCompleted
 } from "./services/requirementProgress.js";
-
-function greeting() {
-  const h = new Date().getHours();
-  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
-}
 
 function getReadiness(checklist) {
   const items = checklist?.requirements || [];
@@ -67,11 +63,11 @@ function ReadinessHero({ checklist, navigate }) {
   );
 }
 
-export default function Dashboard({ navigate }) {
+export default function Dashboard({ navigate, session, ...headerControls }) {
   const [checklist, setChecklist] = useState(loadChecklist);
   const [recent, setRecent] = useState([]);
   const stats = summarize(checklist);
-  const name = checklist?.profile.businessName;
+
 
   function toggle(item) {
     if (!checklist) return;
@@ -102,9 +98,11 @@ export default function Dashboard({ navigate }) {
     : [];
 
   return <>
-    <div className="eyebrow">YOUR BUSINESS WORKSPACE</div>
-    <h1>{greeting()}, {name ? <span data-no-translate>{name}</span> : 'business owner'}.</h1>
-    <p className="intro">Everything you need to stay organized, understand requirements, and keep your business moving.</p>
+    <PageHeader
+      {...headerControls}
+      title={<>GoodMorning <span data-no-translate>BizBridge.</span></>}
+      description="Everything you need to stay organized, understand requirements, and keep your business moving."
+    />
 
     <ReadinessHero checklist={checklist} navigate={navigate} />
 

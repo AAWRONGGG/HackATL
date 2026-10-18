@@ -1,7 +1,8 @@
+import PageHeader from './components/PageHeader.jsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight, BookOpen, CheckCircle2, ClipboardCheck, Download, ExternalLink,
-  FileCheck2, FileClock, Info, MapPin, RotateCcw, ShieldAlert, ShieldCheck,
+  FileCheck2, FileClock, Info, MapPin, RotateCcw, ShieldCheck,
   UploadCloud,
 } from 'lucide-react';
 import { INDUSTRIES } from './data/atlantaRequirements.js';
@@ -48,7 +49,7 @@ function downloadJSON(payload) {
   URL.revokeObjectURL(url);
 }
 
-export default function Requirements() {
+export default function Requirements(headerControls) {
   const [progress, setProgress] = useState(getRequirementProgress);
   const [initial] = useState(getSaved);
   const [profile, setProfile] = useState(() => normalizedProfile(initial?.profile || defaultProfile));
@@ -158,18 +159,13 @@ export default function Requirements() {
 
   return (
     <div className="cb-req">
-      <div className="cb-req-head">
-        <div>
-          <div className="cb-req-eyebrow"><MapPin size={15} /> ATLANTA, GEORGIA</div>
-          <h1>Business requirements</h1>
-          <p>Build a personalized, source-linked checklist for your business, then match documents against the expected evidence.</p>
-        </div>
-        <span className="cb-req-version">Ruleset {RULESET_VERSION}</span>
-      </div>
-
-      <div className="cb-req-alert"><ShieldAlert size={19} />
-        <span>Supported jurisdiction: <strong>inside Atlanta city limits only.</strong> This is not an exhaustive legal determination. Conditional and unclear items need agency or professional confirmation. Never upload sensitive IDs into this demo.</span>
-      </div>
+      <PageHeader
+        {...headerControls}
+        title="Your business checklist"
+        description="Tell us about your business, and we'll help you figure out what you need to get started."
+      >
+        <div className="cb-req-location"><MapPin size={15} aria-hidden="true" /> Atlanta, Georgia</div>
+      </PageHeader>
 
       <form className="cb-req-form" onSubmit={generate}>
         <div className="cb-req-form-title"><ClipboardCheck size={20} /><h2>Tell us about your business</h2></div>
@@ -325,6 +321,13 @@ export default function Requirements() {
           <span>Document AI can mark evidence as received, but neither the AI nor a manual checkmark verifies official licensing status. Confirm requirements, exceptions, and permit validity with the issuing agency.</span>
         </div>
       </section>}
+      <section className="cb-req-disclaimer" aria-labelledby="requirements-legal-heading">
+        <Info size={16} aria-hidden="true" />
+        <div>
+          <h2 id="requirements-legal-heading">Jurisdiction and legal information</h2>
+          <p>Supported jurisdiction: <strong>inside Atlanta city limits only.</strong> This is not an exhaustive legal determination. Conditional and unclear items need agency or professional confirmation. Never upload sensitive IDs into this demo.</p>
+        </div>
+      </section>
     </div>
   );
 }

@@ -26,9 +26,11 @@ function Switch({ icon: Icon, label, hint, checked, onChange }) {
   );
 }
 
-export default function AccessibilityPanel() {
+export default function AccessibilityPanel({ open: controlledOpen, onClose, returnFocusRef }) {
   const { settings, update, reset, translation } = useAccessibility();
-  const [open, setOpen] = useState(false);
+  const [localOpen, setLocalOpen] = useState(false);
+  const controlled = controlledOpen !== undefined;
+  const open = controlled ? controlledOpen : localOpen;
   const buttonRef = useRef(null);
   const panelRef = useRef(null);
   const titleId = useId();
@@ -36,43 +38,50 @@ export default function AccessibilityPanel() {
 
   useEffect(() => {
     if (!open) return undefined;
+    const trigger = returnFocusRef?.current || buttonRef.current;
+    function close() {
+      if (controlled) onClose();
+      else setLocalOpen(false);
+    }
     panelRef.current?.querySelector('input, button, select')?.focus();
     function onKey(event) {
       if (event.key === 'Escape') {
-        setOpen(false);
-        buttonRef.current?.focus();
+        close();
+        trigger?.focus();
       }
     }
     function onPointer(event) {
-      if (!panelRef.current?.contains(event.target) && !buttonRef.current?.contains(event.target)) setOpen(false);
+      if (!panelRef.current?.contains(event.target) && !trigger?.contains(event.target)) close();
     }
     document.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('focusin', onPointer);
     return () => {
       document.removeEventListener('keydown', onKey);
       document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('focusin', onPointer);
     };
-  }, [open]);
+  }, [open, controlled, onClose, returnFocusRef]);
 
   return (
-    <div className="a11y">
-      <button
+    <div className={controlled ? 'a11y a11y-account' : 'a11y'}>
+      {!controlled && <button
         ref={buttonRef}
         type="button"
         className="a11y-trigger"
         aria-expanded={open}
         aria-controls="a11y-panel"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setLocalOpen((o) => !o)}
       >
         <Accessibility size={18} aria-hidden="true" />
         <span>Accessibility</span>
-      </button>
+      </button>}
 
       {open && (
         <div id="a11y-panel" ref={panelRef} className="a11y-panel" role="dialog" aria-labelledby={titleId}>
           <div className="a11y-head">
             <h2 id={titleId}>Accessibility</h2>
-            <button type="button" className="a11y-close" aria-label="Close accessibility settings" onClick={() => { setOpen(false); buttonRef.current?.focus(); }}>
+            <button type="button" className="a11y-close" aria-label="Close accessibility settings" onClick={() => { if (controlled) onClose(); else setLocalOpen(false); (returnFocusRef?.current || buttonRef.current)?.focus(); }}>
               <X size={18} aria-hidden="true" />
             </button>
           </div>

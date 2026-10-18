@@ -1,0 +1,98 @@
+[
+  {
+    "file": "sample_business_registration.pdf",
+    "document_type": "business_registration",
+    "model_score": 0.3458,
+    "score_calibrated": false,
+    "status": "needs_review",
+    "fields_detected": [
+      "business_name",
+      "business_address",
+      "document_number",
+      "expiration_date",
+      "issue_date",
+      "date_candidates"
+    ]
+  },
+  {
+    "file": "sample_food_service_permit.pdf",
+    "document_type": "food_service_permit",
+    "model_score": 0.3821,
+    "score_calibrated": false,
+    "status": "needs_review",
+    "fields_detected": [
+      "business_name",
+      "business_address",
+      "document_number",
+      "expiration_date",
+      "issue_date",
+      "date_candidates"
+    ]
+  },
+  {
+    "file": "sample_tax_document.pdf",
+    "document_type": "tax_document",
+    "model_score": 0.3757,
+    "score_calibrated": false,
+    "status": "needs_review",
+    "fields_detected": [
+      "business_name",
+      "business_address",
+      "document_number",
+      "expiration_date",
+      "issue_date",
+      "date_candidates"
+    ]
+  },
+  {
+    "file": "training_based_business_registration.pdf",
+    "document_type": "business_registration",
+    "model_score": 0.4735,
+    "score_calibrated": false,
+    "status": "needs_review",
+    "fields_detected": [
+      "business_name",
+      "business_address",
+      "document_number",
+      "expiration_date",
+      "issue_date",
+      "date_candidates"
+    ],
+    "training_based": true,
+    "source": "ml/data/raw/business_registration/Annual Registration (CD 940).pdf"
+  },
+  {
+    "file": "training_based_food_service_permit.pdf",
+    "document_type": "food_service_permit",
+    "model_score": 0.4951,
+    "score_calibrated": false,
+    "status": "needs_review",
+    "fields_detected": [
+      "business_name",
+      "business_address",
+      "document_number",
+      "expiration_date",
+      "issue_date",
+      "date_candidates"
+    ],
+    "training_based": true,
+    "source": "ml/data/raw/food_service_permit/EnvHealth_Food_TempFoodServiceVendorApplication.pdf"
+  },
+  {
+    "file": "training_based_tax_document.pdf",
+    "document_type": "tax_document",
+    "model_score": 0.4952,
+    "score_calibrated": false,
+    "status": "needs_review",
+    "fields_detected": [
+      "business_name",
+      "business_address",
+      "document_number",
+      "expiration_date",
+      "issue_date",
+      "date_candidates"
+    ],
+    "training_based": true,
+    "source": "ml/data/raw/tax_document/rd1061_tax_authorization.pdf"
+  }
+]

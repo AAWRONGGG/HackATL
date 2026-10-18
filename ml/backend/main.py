@@ -3,9 +3,12 @@ import os
 import re
 
 from dotenv import load_dotenv
-
-load_dotenv()
 from pathlib import Path
+
+# Preserve process settings, prefer this service's file, then fill missing values
+# from the repository configuration used by the original Gemini setup.
+load_dotenv(Path(__file__).resolve().parent / '.env', override=False)
+load_dotenv(Path(__file__).resolve().parents[2] / '.env', override=False)
 from functools import lru_cache
 from datetime import datetime
 
@@ -15,6 +18,9 @@ import joblib
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from ml.backend.chat import router as chat_router
+from ml.backend.voice import router as voice_router
+from ml.backend.vision import image_text
+from starlette.concurrency import run_in_threadpool
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / 'models' / 'document_classifier.joblib'
 MAX_BYTES = 10 * 1024 * 1024
@@ -34,6 +40,7 @@ origins = [
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=False, allow_methods=['GET','POST'], allow_headers=['Content-Type'])
 # Register the BizBridge AI chatbot
 app.include_router(chat_router)
+app.include_router(voice_router)
 
 @lru_cache(maxsize=1)
 def get_model():
@@ -108,7 +115,11 @@ async def analyze(file: UploadFile):
         raise HTTPException(415, 'The uploaded file is not a PDF.')
     text, pages = pdf_text(data)
     if len(text.strip()) < 30:
-        raise HTTPException(422, 'This PDF has little selectable text. Image-only scans need OCR, which this version does not yet provide.')
+        raise HTTPException(422, 'This PDF has little selectable text. Attach a text-selectable PDF or a clear JPEG/PNG document photo for OCR.')
+    return await run_in_threadpool(analyze_text, Path(file.filename).name, text, pages)
+
+
+def analyze_text(filename: str, text: str, pages: int) -> dict:
     try:
         model = get_model()
         label = str(model.predict([text])[0])
@@ -117,7 +128,7 @@ async def analyze(file: UploadFile):
     except Exception as exc:
         raise HTTPException(500, 'Model inference failed. Verify the model file and scikit-learn==1.6.1.') from exc
     return {
-        'filename': Path(file.filename).name,
+        'filename': filename,
         'document_type': label,
         'model_score': score,
         'score_calibrated': False,
@@ -137,3 +148,22 @@ async def analyze_document(file: UploadFile = File(...)):
 async def classify_document(file: UploadFile = File(...)):
     # Existing frontend code remains compatible; this response adds extracted_fields.
     return await analyze(file)
+
+
+@app.post('/api/analyze-image')
+async def analyze_image(file: UploadFile = File(...)):
+    try:
+        if not file.filename or Path(file.filename).suffix.lower() not in {'.jpg', '.jpeg', '.png', '.webp'}:
+            raise HTTPException(415, 'Choose a JPEG, PNG, or WebP document photo.')
+        if file.content_type not in {'image/jpeg', 'image/png', 'image/webp'}:
+            raise HTTPException(415, 'Choose a JPEG, PNG, or WebP document photo.')
+        data = await file.read(MAX_BYTES + 1)
+    finally:
+        await file.close()
+    if len(data) > MAX_BYTES:
+        raise HTTPException(413, 'Maximum photo size is 10 MB.')
+    text = await run_in_threadpool(image_text, data)
+    result = await run_in_threadpool(analyze_text, Path(file.filename).name, text, 1)
+    result['extraction_method'] = 'local_ocr'
+    result['ocr_limitations'] = 'Best for clear printed Latin text (English/Spanish). Hindi-script photo OCR is not supported. Verify every extracted field.'
+    return result
