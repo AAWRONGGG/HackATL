@@ -37,7 +37,7 @@ function downloadJSON(payload) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'clearbridge-atlanta-requirements.json';
+  link.download = 'bizbridge-atlanta-requirements.json';
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -98,10 +98,10 @@ export default function Requirements() {
       });
       setAiMessage(`AI matched a document type to ${matches.length} checklist item(s). A human still needs to review the evidence.`);
     }
-    window.addEventListener('clearbridge:document-analyzed', onAnalyzed);
+    window.addEventListener('bizbridge:document-analyzed', onAnalyzed);
     // Reconcile classifications recorded while the Documents tab was visible.
     for (const prior of getDocumentAnalyses()) onAnalyzed({ detail: prior });
-    return () => window.removeEventListener('clearbridge:document-analyzed', onAnalyzed);
+    return () => window.removeEventListener('bizbridge:document-analyzed', onAnalyzed);
   }, [generated, result, requirements]);
 
   const counts = requirements.reduce((a, item) => {

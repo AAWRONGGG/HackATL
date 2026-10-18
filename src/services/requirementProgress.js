@@ -1,4 +1,4 @@
-const STORAGE_KEY = "clearbridge-requirement-progress";
+const STORAGE_KEY = "bizbridge-requirement-progress";
 
 export function getRequirementProgress() {
     try {
@@ -16,6 +16,6 @@ export function setRequirementCompleted(id, completed) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
 
     window.dispatchEvent(
-        new CustomEvent("clearbridge:progress-updated")
+        new CustomEvent("bizbridge:progress-updated")
     );
 }

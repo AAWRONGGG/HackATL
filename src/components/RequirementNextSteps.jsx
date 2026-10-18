@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowRight, ClipboardCheck, FileCheck2, FileClock } from 'lucide-react';
 import { getRequirements, RULESET_VERSION } from '../services/requirementsEngine.js';
 
-const STORAGE_KEY = 'clearbridge-atlanta-requirements-v1';
+const STORAGE_KEY = 'bizbridge-atlanta-requirements-v1';
 
 function readSavedChecklist() {
   try {

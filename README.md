@@ -11,7 +11,7 @@ start from the device's own dark-mode / reduced-motion / contrast settings.
 
 ## Connecting the backend (translation)
 
-Translation goes through the ClearBridge backend's `/translate` endpoint (Claude now, your own model later).
+Translation goes through the BizBridge backend's `/translate` endpoint (Claude now, your own model later).
 Run the backend on port 8000, or point the app elsewhere with `VITE_API_URL` in `.env.local`:
 
 ```

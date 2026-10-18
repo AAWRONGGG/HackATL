@@ -1,7 +1,7 @@
 // Accessibility settings: saved per device, applied as attributes on <html>
 // so every page and stylesheet can react to them (see accessibility.css).
 
-export const SETTINGS_KEY = 'clearbridge-accessibility-v1';
+export const SETTINGS_KEY = 'bizbridge-accessibility-v1';
 
 export const TEXT_SIZES = [
   { value: 'small', label: 'Small' },

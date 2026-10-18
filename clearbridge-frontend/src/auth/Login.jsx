@@ -60,10 +60,10 @@ export default function Login({ onSignedIn }) {
 
   return (
     <div className="auth">
-      <section className="auth-brand" aria-label="About ClearBridge">
+      <section className="auth-brand" aria-label="About BizBridge">
         <div className="brand auth-logo">
           <span className="brandmark">C</span>
-          <span>ClearBridge<small>Business made simpler</small></span>
+          <span>BizBridge<small>Business made simpler</small></span>
         </div>
         <div className="auth-pitch">
           <h2>Know what your business needs, and whether you have it.</h2>

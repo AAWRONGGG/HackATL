@@ -1,4 +1,4 @@
-// ClearBridge: source-backed rules for new businesses in Atlanta city limits.
+// BizBridge: source-backed rules for new businesses in Atlanta city limits.
 // Last manual review: 2026-10-17. Recheck agency instructions before production.
 // Rule values: required / conditional / review / not_applicable.
 

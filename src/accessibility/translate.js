@@ -1,12 +1,12 @@
 // Translates whatever is on the page (text and placeholder/aria-label/title attributes)
-// through the ClearBridge backend's /translate endpoint, and keeps new content translated
+// through the BizBridge backend's /translate endpoint, and keeps new content translated
 // as React re-renders. Only text node values are changed, never the DOM structure,
 // so React keeps working normally. Switching back to English restores the originals.
 
 import { useEffect, useState } from 'react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-const CACHE_PREFIX = 'clearbridge-translations-v1:';
+const CACHE_PREFIX = 'bizbridge-translations-v1:';
 const ATTRIBUTES = ['placeholder', 'aria-label', 'title'];
 const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'CODE', 'PRE', 'TEXTAREA', 'SVG']);
 const BATCH_SIZE = 60;
@@ -179,7 +179,7 @@ class PageTranslator {
       this.onStatus({
         status: 'error',
         message: offline
-          ? 'Translation needs the ClearBridge server. Start the backend and pick the language again.'
+          ? 'Translation needs the BizBridge server. Start the backend and pick the language again.'
           : err.message,
       });
     }

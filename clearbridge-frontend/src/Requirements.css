@@ -1,4 +1,4 @@
-/* Scoped styles: won't change your existing ClearBridge dashboard. */
+/* Scoped styles: won't change your existing BizBridge dashboard. */
 .cb-req { color: #17243a; width: 100%; max-width: 1140px; margin: 0 auto; padding: 4px 0 50px; font-family: inherit; }
 .cb-req * { box-sizing: border-box; }
 .cb-req-head, .cb-req-results-title { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }

@@ -1,10 +1,10 @@
 // Demo-only sign-in for the hackathon: one hardcoded account, no backend, no real security.
 // Change the credentials below if you like.
 
-export const DEMO_EMAIL = 'demo@clearbridge.app';
-export const DEMO_PASSWORD = 'clearbridge';
+export const DEMO_EMAIL = 'demo@bizbridge.app';
+export const DEMO_PASSWORD = 'bizbridge';
 
-const SESSION_KEY = 'clearbridge-session-v1';
+const SESSION_KEY = 'bizbridge-session-v1';
 
 function read(key, fallback) {
   try {

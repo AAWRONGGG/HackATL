@@ -1,9 +1,9 @@
 import { REQUIREMENT_RULES } from '../data/atlantaRequirements.js';
 
 export const RULESET_VERSION = 'ATL-2026-10-17-v1';
-export const DOCUMENT_INBOX_KEY = 'clearbridge-document-analysis-v1';
+export const DOCUMENT_INBOX_KEY = 'bizbridge-document-analysis-v1';
 // Where the Requirements page saves the profile, checklist and evidence (shared with the dashboard).
-export const REQUIREMENTS_STORAGE_KEY = 'clearbridge-atlanta-requirements-v1';
+export const REQUIREMENTS_STORAGE_KEY = 'bizbridge-atlanta-requirements-v1';
 export const EVIDENCE_STATUSES = [
   'not_submitted', 'document_received', 'needs_review', 'evidence_reviewed',
 ];
@@ -125,7 +125,7 @@ export function publishDocumentAnalysis(rawAnalysis) {
     const remaining = prior.filter((d) => d.documentId !== safe.documentId);
     window.sessionStorage.setItem(DOCUMENT_INBOX_KEY, JSON.stringify([...remaining, safe].slice(-30)));
   } catch { /* Persistence is optional; live listener can still receive event. */ }
-  window.dispatchEvent(new CustomEvent('clearbridge:document-analyzed', { detail: safe }));
+  window.dispatchEvent(new CustomEvent('bizbridge:document-analyzed', { detail: safe }));
   return true;
 }
 

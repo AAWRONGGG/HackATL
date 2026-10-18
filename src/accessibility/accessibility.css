@@ -1,4 +1,4 @@
-/* ClearBridge accessibility layer.
+/* BizBridge accessibility layer.
    Loaded after the page stylesheets. Default mode changes nothing; every override below
    only applies when a setting is on (attributes set on <html> by settings.js). */
 
