@@ -1,14 +1,20 @@
 """BizBridge prototype document analysis API; PDFs are processed in memory only."""
 import os
 import re
+
+from dotenv import load_dotenv
+
+load_dotenv()
 from pathlib import Path
 from functools import lru_cache
 from datetime import datetime
+
 
 import fitz
 import joblib
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from ml.backend.chat import router as chat_router
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / 'models' / 'document_classifier.joblib'
 MAX_BYTES = 10 * 1024 * 1024
@@ -16,8 +22,18 @@ MAX_PAGES = 20
 MAX_TEXT = 150_000
 
 app = FastAPI(title='BizBridge Document AI', version='0.2.0')
-origins = [o.strip() for o in os.getenv('BIZBRIDGE_CORS_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',') if o.strip()]
+origins = [
+    o.strip()
+    for o in os.getenv(
+        "BIZBRIDGE_CORS_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173,"
+        "http://172.24.142.75:5173,http://localhost:3000"
+    ).split(",")
+    if o.strip()
+]
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=False, allow_methods=['GET','POST'], allow_headers=['Content-Type'])
+# Register the BizBridge AI chatbot
+app.include_router(chat_router)
 
 @lru_cache(maxsize=1)
 def get_model():
