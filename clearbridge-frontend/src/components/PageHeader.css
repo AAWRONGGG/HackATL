@@ -1,0 +1,20 @@
+.page-heading { margin-bottom: 24px; }
+.page-heading-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.content .page-heading-row > h1 {
+  flex: 1; min-width: 0; margin: 0;
+  font-size: clamp(26px, 3vw, 31px); font-weight: 700;
+  line-height: 1.2; letter-spacing: -.035em; overflow-wrap: anywhere;
+}
+.page-heading-row .account { flex-shrink: 0; margin-left: auto; }
+.page-heading-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin-top: 12px; }
+.page-heading-meta > :is(.eyebrow, .fe-topline) { margin: 0; }
+.content .page-heading-description { margin: 10px 0 0; font-size: 14px; line-height: 1.6; }
+.content > :is(.cb-req, .cb-deadlines) { padding-top: 0; }
+@media (max-width: 700px) {
+  .page-heading-row { gap: 12px; }
+  .page-heading-row .hamburger { margin: 0; padding: 0; flex-shrink: 0; min-height: 44px; }
+  .page-heading-row .a11y-panel {
+    position: absolute; top: calc(100% + 10px); left: auto; right: 0;
+    width: min(340px, calc(100vw - 36px)); max-height: calc(100dvh - 130px);
+  }
+}

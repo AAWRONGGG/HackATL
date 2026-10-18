@@ -33,3 +33,39 @@ def test_field_candidates():
 def test_reject_non_pdf():
     resp = client.post('/api/analyze-document', files={'file': ('note.txt', b'not pdf', 'text/plain')})
     assert resp.status_code == 415
+
+
+def test_missing_file():
+    response = client.post('/api/analyze-document')
+    assert response.status_code == 422
+
+
+def test_invalid_pdf_contents():
+    response = client.post('/api/analyze-document', files={'file': ('invalid.pdf', b'not a PDF', 'application/pdf')})
+    assert response.status_code == 415
+
+
+def test_corrupt_pdf():
+    response = client.post('/api/analyze-document', files={'file': ('corrupt.pdf', b'%PDF-1.7\ninvalid', 'application/pdf')})
+    assert response.status_code == 422
+    assert 'Cannot read PDF' in response.json()['detail']
+
+
+def test_pdf_without_selectable_text():
+    response = client.post('/api/analyze-document', files={'file': ('scan.pdf', create_pdf(''), 'application/pdf')})
+    assert response.status_code == 422
+    assert 'OCR' in response.json()['detail']
+
+
+def test_oversized_pdf():
+    response = client.post('/api/analyze-document', files={'file': ('large.pdf', b'%PDF-' + b' ' * (10 * 1024 * 1024), 'application/pdf')})
+    assert response.status_code == 413
+
+
+def test_local_frontend_cors():
+    for origin in ['http://localhost:5173', 'http://127.0.0.1:5173']:
+        response = client.options('/api/analyze-document', headers={
+            'Origin': origin, 'Access-Control-Request-Method': 'POST',
+        })
+        assert response.status_code == 200
+        assert response.headers['access-control-allow-origin'] == origin
