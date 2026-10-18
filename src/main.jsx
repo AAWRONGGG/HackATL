@@ -1,13 +1,31 @@
-import React, {useState} from 'react';
-import {createRoot} from 'react-dom/client';
-import {LayoutDashboard,ClipboardCheck,Files,MessageCircle,CalendarDays,Users,ArrowRight,UploadCloud,Menu,X,ShieldCheck,Languages} from 'lucide-react';
-import './style.css';
+
+
+import React, { useState } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  LayoutDashboard,
+  ClipboardCheck,
+  Files,
+  MessageCircle,
+  CalendarDays,
+  Users,
+  ArrowRight,
+  UploadCloud,
+  Menu,
+  X,
+  ShieldCheck,
+  Languages,
+} from "lucide-react";
+
+import "./style.css";
 import FindExperts from "./FindExperts.jsx";
 import Requirements from "./Requirements.jsx";
 import Dashboard from "./Dashboard.jsx";
 import "@fontsource/opendyslexic/400.css";
 import "@fontsource/opendyslexic/700.css";
-import { AccessibilityProvider } from "./accessibility/AccessibilityContext.jsx";
+import {
+  AccessibilityProvider,
+} from "./accessibility/AccessibilityContext.jsx";
 import AccessibilityPanel from "./accessibility/AccessibilityPanel.jsx";
 import "./accessibility/accessibility.css";
 import RequirementDeadlines from "./components/RequirementDeadlines.jsx";
@@ -24,9 +42,19 @@ return <div className="app"><aside className={'sidebar '+(menu?'open':'')}><div 
     ) : null}
     {page === "Find Experts" ? <FindExperts /> : null}
 
-</div>
-</main>
-</div>;
+          {page === "Find Experts" ? (
+            <FindExperts />
+          ) : null}
+        </div>
+      </main>
+    </div>
+  );
 }
 
-createRoot(document.getElementById("root")).render(<AccessibilityProvider><App /></AccessibilityProvider>);
+createRoot(
+  document.getElementById("root")
+).render(
+  <AccessibilityProvider>
+    <App />
+  </AccessibilityProvider>
+);
