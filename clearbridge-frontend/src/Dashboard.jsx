@@ -7,6 +7,10 @@ import {
   CLASS_TEXT, loadChecklist, saveEvidence, STATUS_TEXT, statusOf, summarize,
 } from './services/checklistStore.js';
 import './Readiness.css';
+import {
+  getRequirementProgress,
+  setRequirementCompleted
+} from "./services/requirementProgress.js";
 
 function greeting() {
   const h = new Date().getHours();
@@ -71,15 +75,24 @@ export default function Dashboard({ navigate }) {
 
   function toggle(item) {
     if (!checklist) return;
-    const evidence = { ...checklist.evidence };
-    const done = statusOf(evidence, item.id) === 'evidence_reviewed';
-    evidence[item.id] = {
-      status: done ? (evidence[item.id]?.documents?.length ? 'document_received' : 'not_submitted') : 'evidence_reviewed',
-      documents: evidence[item.id]?.documents || [],
-    };
-    saveEvidence(evidence);
-    setChecklist({ ...checklist, evidence });
-    if (!done) setRecent(r => [...r, item.id]);
+
+    const progress = getRequirementProgress();
+
+    const completed =
+        typeof progress[item.id] === "boolean"
+            ? progress[item.id]
+            : statusOf(checklist.evidence, item.id) === "evidence_reviewed";
+
+    setRequirementCompleted(item.id, !completed);
+    setChecklist(loadChecklist());
+
+    if (!completed) {
+      setRecent(previous =>
+          previous.includes(item.id)
+              ? previous
+              : [...previous, item.id]
+      );
+    }
   }
 
   const nextSteps = checklist

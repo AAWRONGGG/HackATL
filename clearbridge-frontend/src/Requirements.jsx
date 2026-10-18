@@ -11,6 +11,10 @@ import {
   REQUIREMENTS_STORAGE_KEY as STORAGE_KEY,
 } from './services/requirementsEngine.js';
 import './Requirements.css';
+import {
+  getRequirementProgress,
+  setRequirementCompleted
+} from "./services/requirementProgress.js";
 const STATUS_TEXT = {
   not_submitted: 'No document yet',
   document_received: 'Document received — review needed',
@@ -45,6 +49,7 @@ function downloadJSON(payload) {
 }
 
 export default function Requirements() {
+  const [progress, setProgress] = useState(getRequirementProgress);
   const [initial] = useState(getSaved);
   const [profile, setProfile] = useState(() => normalizedProfile(initial?.profile || defaultProfile));
   const [generated, setGenerated] = useState(Boolean(initial?.generated));
@@ -269,6 +274,22 @@ export default function Requirements() {
             return <article className="cb-req-item" key={item.id}>
               <div className="cb-req-item-main">
                 <span className={`cb-req-pill cb-req-pill-${item.classification}`}>{CLASS_TEXT[item.classification]}</span>
+                              <label className="cb-req-completion">
+                                <input
+                                    type="checkbox"
+                                    checked={progress[item.id] === true}
+                                    onChange={(e) => {
+                                      setRequirementCompleted(item.id, e.target.checked);
+                                      setProgress(getRequirementProgress());
+                                    }}
+                                    aria-label={`Mark ${item.title} as ${
+                                        progress[item.id] ? "incomplete" : "complete"
+                                    }`}
+                                />
+                                <span>
+                  {progress[item.id] ? "Completed" : "Mark as completed"}
+                </span>
+                </label>
                 <h4>{item.title}</h4>
                 <p>{item.description}</p>
                 <div className="cb-req-meta"><ShieldCheck size={15} /> {item.agency}</div>
