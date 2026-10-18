@@ -5,7 +5,12 @@
 
 import { useEffect, useState } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const TRANSLATION_API_URL = (
+  import.meta.env.VITE_TRANSLATION_API_URL ||
+  "http://127.0.0.1:8001"
+).replace(/\/+$/, "");
+
+// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const CACHE_PREFIX = 'bizbridge-translations-v1:';
 const ATTRIBUTES = ['placeholder', 'aria-label', 'title'];
 const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'CODE', 'PRE', 'TEXTAREA', 'SVG']);
@@ -156,7 +161,7 @@ class PageTranslator {
     try {
       for (let i = 0; i < missing.length; i += BATCH_SIZE) {
         const batch = missing.slice(i, i + BATCH_SIZE);
-        const res = await fetch(`${API_URL}/translate`, {
+        const res = await fetch(`${TRANSLATION_API_URL}/translate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ language: lang, texts: batch }),

@@ -13,6 +13,7 @@ export const TEXT_SIZES = [
 export const LANGUAGES = [
   { value: 'en', label: 'English' },
   { value: 'es', label: 'Español' },
+  { value: "hi", label: "हिन्दी" },
   { value: 'vi', label: 'Tiếng Việt' },
   { value: 'ko', label: '한국어' },
   { value: 'zh', label: '中文 (简体)' },
