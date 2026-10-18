@@ -18,6 +18,67 @@ const STATUS_TEXT = {
   evidence_reviewed: 'Evidence reviewed (not compliance verified)',
 };
 const CLASS_TEXT = { required: 'Required', conditional: 'Conditional', review: 'Needs review' };
+
+// NAICS 2022 sectors (U.S. Census Bureau). The Industry dropdown is grouped by these.
+const NAICS_SECTORS = [
+  { code: '11', title: 'Agriculture, Forestry, Fishing and Hunting' },
+  { code: '21', title: 'Mining, Quarrying, and Oil and Gas Extraction' },
+  { code: '22', title: 'Utilities' },
+  { code: '23', title: 'Construction' },
+  { code: '31-33', title: 'Manufacturing' },
+  { code: '42', title: 'Wholesale Trade' },
+  { code: '44-45', title: 'Retail Trade' },
+  { code: '48-49', title: 'Transportation and Warehousing' },
+  { code: '51', title: 'Information' },
+  { code: '52', title: 'Finance and Insurance' },
+  { code: '53', title: 'Real Estate and Rental and Leasing' },
+  { code: '54', title: 'Professional, Scientific, and Technical Services' },
+  { code: '55', title: 'Management of Companies and Enterprises' },
+  { code: '56', title: 'Administrative and Support and Waste Management and Remediation Services' },
+  { code: '61', title: 'Educational Services' },
+  { code: '62', title: 'Health Care and Social Assistance' },
+  { code: '71', title: 'Arts, Entertainment, and Recreation' },
+  { code: '72', title: 'Accommodation and Food Services' },
+  { code: '81', title: 'Other Services (except Public Administration)' },
+  { code: '92', title: 'Public Administration' },
+];
+
+// Categories for sectors that don't have specific rules yet. They get the general
+// Atlanta and Georgia requirements. Add a rule in atlantaRequirements.js to make one specific.
+const SECTOR_CATEGORIES = {
+  '11': [{ value: 'agriculture', label: 'Farm, urban garden or nursery' }],
+  '21': [{ value: 'mining', label: 'Mining or quarrying' }],
+  '22': [{ value: 'utilities', label: 'Utility service provider' }],
+  '23': [{ value: 'construction', label: 'Contractor or construction trade' }],
+  '31-33': [{ value: 'manufacturing', label: 'Manufacturing or maker workshop' }],
+  '42': [{ value: 'wholesale', label: 'Wholesale or distribution' }],
+  '48-49': [{ value: 'transportation', label: 'Delivery, trucking or warehousing' }],
+  '51': [{ value: 'media', label: 'Media, publishing or software' }],
+  '52': [{ value: 'finance', label: 'Financial services or insurance agency' }],
+  '53': [{ value: 'real-estate', label: 'Real estate or property rental' }],
+  '55': [{ value: 'holding-company', label: 'Holding or management company' }],
+  '56': [{ value: 'business-support', label: 'Cleaning, landscaping or staffing' }],
+  '61': [{ value: 'education', label: 'Tutoring, training or school' }],
+  '62': [{ value: 'health-care', label: 'Health care or child care' }],
+  '71': [{ value: 'recreation', label: 'Fitness, arts or entertainment' }],
+  '92': [{ value: 'public-administration', label: 'Government or public agency' }],
+};
+
+// Which sector each industry belongs to.
+const SECTOR_OF_INDUSTRY = {
+  restaurant: '72',
+  grocery: '44-45',
+  retail: '44-45',
+  salon: '81',
+  consulting: '54',
+  ...Object.fromEntries(Object.entries(SECTOR_CATEGORIES).flatMap(([code, cats]) => cats.map((c) => [c.value, code]))),
+};
+
+function sectorFor(industry) {
+  const code = SECTOR_OF_INDUSTRY[industry]
+    || (String(industry).startsWith('other-') ? String(industry).slice(6) : null); // older saved checklists
+  return NAICS_SECTORS.find((s) => s.code === code) || null;
+}
 const CATEGORIES = [
   'Atlanta local', 'Atlanta application evidence', 'Business formation',
   'Ongoing registrations', 'Tax', 'Employment and tax', 'Insurance',
@@ -148,7 +209,10 @@ export default function Requirements() {
 
   function exportJSON() {
     if (!result) return;
-    downloadJSON(exportRequirementsPayload(result, evidence));
+    const payload = exportRequirementsPayload(result, evidence);
+    const sector = sectorFor(profile.industry);
+    if (sector) payload.profile = { ...payload.profile, naicsSector: sector.code, naicsSectorTitle: sector.title };
+    downloadJSON(payload);
   }
 
   return (
@@ -175,8 +239,22 @@ export default function Requirements() {
           </label>
           <label className="cb-req-field">Industry
             <select value={profile.industry} onChange={(e) => update('industry', e.target.value)}>
-              {INDUSTRIES.map((industry) => <option key={industry.value} value={industry.value}>{industry.label}</option>)}
+              {INDUSTRIES.some((i) => !SECTOR_OF_INDUSTRY[i.value]) && (
+                <optgroup label="Industries with specific rules">
+                  {INDUSTRIES.filter((i) => !SECTOR_OF_INDUSTRY[i.value]).map((i) => <option key={i.value} value={i.value}>{i.label}</option>)}
+                </optgroup>
+              )}
+              {NAICS_SECTORS.map((sector) => (
+                <optgroup key={sector.code} label={`NAICS ${sector.code} · ${sector.title}`}>
+                  {[...INDUSTRIES.filter((i) => SECTOR_OF_INDUSTRY[i.value] === sector.code), ...(SECTOR_CATEGORIES[sector.code] || [])].map((i) => (
+                    <option key={i.value} value={i.value}>{i.label}</option>
+                  ))}
+                </optgroup>
+              ))}
             </select>
+            {sectorFor(profile.industry) && (
+              <small className="cb-req-naics" style={{ fontSize: '.75rem', fontWeight: 500, color: '#64748b' }}>NAICS sector {sectorFor(profile.industry).code}: {sectorFor(profile.industry).title}</small>
+            )}
           </label>
           <label className="cb-req-field">Legal structure
             <select value={profile.structure} onChange={(e) => update('structure', e.target.value)}>
