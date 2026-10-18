@@ -18,7 +18,7 @@ function safeSourceUrl(url) {
     }
 }
 
-export default function ChatAssistant() {
+export default function ChatAssistant({ documentContext = "" }) {
     const [question, setQuestion] = useState("");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -45,7 +45,11 @@ export default function ChatAssistant() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ message: text }),
+                body: JSON.stringify({
+                    message: documentContext
+                        ? `Document context for this question:\n${documentContext}\n\nUser question:\n${text}`
+                        : text
+                }),
             });
 
             if (!response.ok) {
